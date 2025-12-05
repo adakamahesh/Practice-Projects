@@ -1,71 +1,65 @@
 import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import { Box, Stack } from "@mui/material";
+import { TextField, Button, Stack } from "@mui/material";
 
-const NumberInput: React.FC = () => {
-    const [rawValue, setRawValue] = useState("");        // raw value without commas
-    const [displayValue, setDisplayValue] = useState(""); // formatted value
-    const [stored, setStored] = useState("");            // stored raw value
+interface MoneyInputProps {
+  label?: string;
+  onSubmit?: (value: string) => void;  // raw value without commas
+  maxIntegerDigits?: number;
+  maxDecimalDigits?: number;
+}
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let input = e.target.value.replace(/,/g, ""); // remove commas
+const MoneyInput: React.FC<MoneyInputProps> = ({
+  label = "Amount",
+  onSubmit,
+  maxIntegerDigits = 8,
+  maxDecimalDigits = 2,
+}) => {
+  const [rawValue, setRawValue] = useState("");
+  const [displayValue, setDisplayValue] = useState("");
 
-        // Allow only numbers and dot
-        if (!/^\d*\.?\d*$/.test(input)) return;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let input = e.target.value.replace(/,/g, "");
 
-        // Split into integer and decimal parts
-        const [intPart, decPart] = input.split(".");
+    // Allow only digits + optional decimal
+    if (!/^\d*\.?\d*$/.test(input)) return;
 
-        // Limit integer to 8 digits, decimal to 2 digits
-        if (intPart.length > 8) return;
-        if (decPart && decPart.length > 2) return;
+    const [intPart, decPart] = input.split(".");
 
-        setRawValue(input); // save raw value
+    // Limit integer digits
+    if (intPart.length > maxIntegerDigits) return;
 
-        // Format integer part with commas
-        const formattedInt = intPart ? Number(intPart).toLocaleString("en-IN") : "";
-        const formatted = decPart !== undefined ? `${formattedInt}.${decPart}` : formattedInt;
+    // Limit decimal digits
+    if (decPart && decPart.length > maxDecimalDigits) return;
 
-        setDisplayValue(formatted);// Update display value
-    };
+    setRawValue(input);
 
-    const handleSubmit = () => {
-        setStored(rawValue); // store raw number without commas
-        setDisplayValue('')
-    };
+    // Format integer part with commas (Indian format)
+    const formattedInt = intPart ? Number(intPart).toLocaleString("en-IN") : "";
+    const formatted =
+      decPart !== undefined ? `${formattedInt}.${decPart}` : formattedInt;
 
-    return (
-        <Box
-            sx={{
-                height: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-        >
-            <Stack spacing={2} alignItems="center" width="300px">
-                <TextField
-                    label="Amount"
-                    variant="outlined"
-                    value={displayValue}
-                    onChange={handleChange}
-                    fullWidth
-                    inputProps={{ maxLength: 15 }}
-                />
+    setDisplayValue(formatted);
+  };
 
-                <Button variant="contained" onClick={handleSubmit}>
-                    Submit
-                </Button>
+  const handleSubmit = () => {
+    if (onSubmit) onSubmit(rawValue);
+  };
 
-                {stored && (
-                    <p style={{ marginTop: "10px" }}>
-                        Stored Output : {stored}
-                    </p>
-                )}
-            </Stack>
-        </Box>
-    );
+  return (
+    <Stack spacing={2} width="300px" alignItems="center">
+      <TextField
+        label={label}
+        variant="outlined"
+        value={displayValue}
+        onChange={handleChange}
+        fullWidth
+      />
+
+      <Button variant="contained" fullWidth onClick={handleSubmit}>
+        Submit
+      </Button>
+    </Stack>
+  );
 };
 
-export default NumberInput;
+export default MoneyInput;
