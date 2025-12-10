@@ -10,7 +10,7 @@ const Header: React.FC<HeaderModel> = ({
 }) => {
   return (
     <Box sx={{ textAlign: align , width: "100%", }}>
-      <Typography variant="h5" fontWeight="bold" padding={'16px'}>
+      <Typography variant="h5" fontWeight="bold" padding={'18px'}>
         {title}
       </Typography>
 

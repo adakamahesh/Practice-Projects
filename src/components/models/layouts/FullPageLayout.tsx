@@ -1,19 +1,14 @@
 import React from "react";
 import { Box } from "@mui/material";
 
-interface FullPageLayoutProps {
+interface Props {
   header: React.ReactNode;
-  sidebar: React.ReactNode;   // ⭐ added sidebar here
-  body: React.ReactNode;
+  sidebar: React.ReactNode;
+  children: React.ReactNode; // still best practice
   footer: React.ReactNode;
 }
 
-const FullPageLayout: React.FC<FullPageLayoutProps> = ({
-  header,
-  sidebar,
-  body,
-  footer,
-}) => {
+const FullPageLayout: React.FC<Props> = ({ header, sidebar, children, footer }) => {
   return (
     <Box
       sx={{
@@ -24,62 +19,58 @@ const FullPageLayout: React.FC<FullPageLayoutProps> = ({
         overflow: "hidden",
       }}
     >
-      {/* ⭐ HEADER FIXED 10% */}
+      {/* HEADER – 10vh (same desktop style) */}
       <Box
         sx={{
-          width: "100%",
           height: "10vh",
-          position: "sticky",
-          top: 0,
+          minHeight: "70px",             //  prevents mobile collapse
+          // borderBottom: "1px solid #ccc",
           background: "#fff",
-          zIndex: 20,
-          borderBottom: "1px solid #ccc",
         }}
       >
         {header}
       </Box>
 
-      {/* ⭐ BODY + SIDEBAR AREA (80%) */}
+      {/* BODY + SIDEBAR */}
       <Box
         sx={{
-          width: "100%",
-          height: "80vh",
           display: "flex",
-          overflow: "hidden",   // IMPORTANT
+          height: "80vh",                //  same desktop style
+          overflow: "hidden",
         }}
       >
-        {/* ⭐ FIXED SIDEBAR */}
+        {/* SIDEBAR – fixed width */}
         <Box
           sx={{
-            width: "250px",
-            height: "80vh",
-            background: "#e0e0e0",
+            width: "2px",
+            minWidth: "250px",           //  stops collapsing on mobile mode
             borderRight: "1px solid #ccc",
+            background: "#e0e0e0",
           }}
         >
           {sidebar}
         </Box>
 
-        {/* ⭐ MAIN CONTENT (scrolls) */}
+        {/* MAIN CONTENT */}
         <Box
           sx={{
             flexGrow: 1,
             height: "80vh",
             overflowY: "auto",
-            padding: 2,
+            p: 2,
           }}
         >
-          {body}
+          {children}
         </Box>
       </Box>
 
-      {/* ⭐ FOOTER FIXED 10% */}
+      {/* FOOTER – 10vh (same desktop style) */}
       <Box
         sx={{
-          width: "100%",
           height: "10vh",
-          background: "#f5f5f5",
+          minHeight: "50px",             //  prevents collapse
           borderTop: "1px solid #ccc",
+          background: "#f5f5f5",
         }}
       >
         {footer}
