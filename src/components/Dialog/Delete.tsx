@@ -1,36 +1,42 @@
 import React from "react";
-import { Button } from "@mui/material";
-import AlertDialog from "./Dialog";
+import { Button, Typography } from "@mui/material";
+import Dialog from "./Dialog";
 
 const DeleteExample = () => {
-  const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
 
-  const handleDelete = async () => {
-    // your logic (API / state update)
-    console.log("Item deleted");
-  };
+    const handleDelete = async () => {
+        console.log("Item deleted");
+    };
 
-  return (
-    <>
-      <Button
-        variant="contained"
-        color="error"
-        onClick={() => setOpen(true)}
-      >
-        Delete
-      </Button>
+    return (
+        <>
+            <Button
+                variant="contained"
+                color="error"
+                onClick={() => setOpen(true)}
+            >
+                Delete
+            </Button>
 
-      <AlertDialog
-        open={open}
-        title="Delete Item"
-        description="Are you sure you want to delete this item?"
-        agreeText="Delete"
-        disagreeText="Cancel"
-        onAgreeAction={handleDelete}
-        onClose={() => setOpen(false)}
-      />
-    </>
-  );
+            <Dialog
+                open={open}
+                title="Delete Item"
+                ConfirmText="Delete"
+                CancelText="Cancel"
+                variant="contained"
+                CancelColor="error"
+                ConfirmColor="success"
+                maxWidth='sm'
+                onConfirmAction={handleDelete}
+                onClose={() => setOpen(false)}
+            >
+                <Typography>
+                    Are you sure you want to delete this item?
+                </Typography>
+            </Dialog>
+        </>
+    );
 };
 
 export default DeleteExample;
